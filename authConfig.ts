@@ -49,7 +49,7 @@ export const authOptions = {
     ],
     callbacks: {
         //Invoked when a user logs in
-        async signIn(props) {
+        async signIn(props: any) {
             console.log("sign in props =>", props);
             return true
         },

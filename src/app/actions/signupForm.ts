@@ -9,7 +9,6 @@ import bcrypt from 'bcrypt';
 //User sign up form action
 export default async function signupFormAction (_: any, data: UserSignUpForm) {
     const hashed_password = await bcrypt.hash(data.password as string, 10);
-    console.log("hashed_password ==>", prisma.user);
     const user = await prisma.user.create({
         data: {
             user_name: data.username,

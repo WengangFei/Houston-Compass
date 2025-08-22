@@ -1,8 +1,8 @@
 'use client';
 
-import Link from 'next/link'
-import React, { useEffect, useState } from 'react'
-import { signIn, signOut, useSession, getProviders } from 'next-auth/react'
+import Link from 'next/link';
+import React, { useEffect, useState } from 'react';
+import { signIn, signOut, useSession, getProviders } from 'next-auth/react';
 import Image from 'next/image';
 
 
@@ -26,7 +26,7 @@ export default function LoginAgent() {
           .slice(1)
           .map((provider) => (
             <button
-            key={provider.id}
+              key={provider.id}
               onClick={() => signIn(provider.id)}
               className="hover:scale-125 hover:cursor-pointer rounded-md px-1 py-1 text-center text-sm"
             >
