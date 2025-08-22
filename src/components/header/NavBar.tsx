@@ -16,18 +16,18 @@ const notoSansJP = Noto_Sans_JP({
 
 export default function NavBar() {
   return (
-    <div className="bg-primary p-2 flex flex-col items-center  md:p-4 md:flex-row md:justify-between  ">
+    <div className="bg-primary flex flex-col items-center  md:px-4 md:flex-row md:justify-between  ">
       {/* Left side: logo + text */}
       <MobilBred />
       <div className="flex items-center space-x-2">
         <Image
           src="/logo.webp"
           alt="logo"
-          width={50}
-          height={50}
+          width={60}
+          height={60}
           className="rounded-full"
         />
-        <p className={clsx(notoSansJP.className, "text-xl font-bold text-blue-600 ")}>
+        <p className={clsx(notoSansJP.className, "text-xl font-bold text-blue-500 ")}>
           Houston 帮
         </p>
       </div>
