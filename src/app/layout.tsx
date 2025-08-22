@@ -1,7 +1,7 @@
 import { Geist, Geist_Mono, } from "next/font/google";
 import "./globals.css";
 import NavBarDesk from "@/components/header/NavBar";
-import AuthProviders from "@/components/AuthProvider";
+import AuthSessionProviders from "@/components/AuthSessionProvider";
 
 
 
@@ -33,17 +33,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
 
-
   return (
-  <AuthProviders>
     <html lang="en" >
       <body
        className={`${geistSans.variable} ${geistMono.variable} font-geist-sans font-geist-mono`}
       >
+      <AuthSessionProviders>
         <NavBarDesk />
         {children}
+      </AuthSessionProviders>
       </body>
     </html>
-  </AuthProviders>
   );
 }

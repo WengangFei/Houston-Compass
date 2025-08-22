@@ -16,7 +16,7 @@ import { Input } from "@/components/ui/input"
 import Link from "next/link"
 import { FaRegEye } from "react-icons/fa";
 import { useActionState, useEffect, useState, useTransition } from "react"
-import signupFormAction from "../actions/signupForm"
+import signupFormAction from "../actions/signupFormAction"
 import { toast } from "react-toastify"
 import { FaBasketballBall } from "react-icons/fa";
 import { useRouter } from "next/navigation"
@@ -31,7 +31,7 @@ const formSchema = z.object({
     }),
     email: z.string().email({
         message: "Invalid email address.",
-    }),
+    }).optional().or(z.literal("")),
     phone: z
     .string()
     .nonempty({ message: "Phone number is required." })
@@ -46,7 +46,8 @@ const formSchema = z.object({
     message: "Passwords do not match.",
     path: ["confirmPassword"],
 })
- 
+
+
 
 
 
@@ -79,7 +80,9 @@ const SignupPage = () => {
     // Handle toast after the state updates
     useEffect(() => {
     if (!state.success) {
-        toast.error('Something went wrong.');
+        toast.error(
+          "Account exists already, please try another email or phone number."
+        );
 
     } else if (state.success === true) {
         toast.success(

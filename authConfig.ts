@@ -1,31 +1,44 @@
 import Google from "next-auth/providers/google";
 import Credentials from "next-auth/providers/credentials";
-import { Auth } from "@auth/core"
-import WeChat from "@auth/core/providers/wechat"
+import WeChat from "@auth/core/providers/wechat";
+import { prisma } from "@/lib/prisma";
+import bcrypt from "bcrypt";
+import { redirect } from "next/dist/server/api-utils";
+
 
 export const authOptions = {
     providers: [
-        Credentials({
+        Credentials({//custom sign in page logic
             name: "credentials",
             credentials: {
-                email: { label: "Email", type: "email", placeholder: "email" },
+                phone: { label: "Phone", type: "phone", placeholder: "phone" },
                 password: { label: "Password", type: "password" },
             },
             async authorize(credentials) {
-                console.log('credentials=>',credentials);
-                // if (!credentials?.email || !credentials.password) {
-                //     throw new Error("Missing email or password");
-                // }
-                // const user = await User.findOne({ email: credentials?.email });
-                // if (!user) {
-                //     throw new Error("No user found with this email");
-                // }
-                // const isPasswordValid = await bcrypt.compare(credentials?.password as string, user.password);
-                // if (!isPasswordValid) {
-                //     throw new Error("Invalid password");
-                // }
-                // return { id: user._id.toString(), email: user.email, name: user.username };
-                return null
+              //after sign in, check if the user exists in the database
+              const user = await prisma.user.findUnique({
+                where: {
+                  phone_number: credentials?.phone as string,
+                },
+              });
+            //   console.log("credentials=>", user);
+              if (!user) {
+                throw new Error("No user found with this phone number.");
+              }
+              const isPasswordValid = await bcrypt.compare(
+                credentials?.password as string,
+                user.password!
+              );
+              if (!isPasswordValid) {
+                throw new Error("Invalid password");
+              }
+              return {
+                id: user.id,
+                name: user.user_name,
+                email: user.email,
+                image: user.image,
+                phone_number: user.phone_number,
+              };
             },
         }),
 
@@ -49,14 +62,42 @@ export const authOptions = {
     ],
     callbacks: {
         //Invoked when a user logs in
-        async signIn(props: any) {
-            console.log("sign in props =>", props);
-            return true
+        async signIn({ user }: { user : any }) {
+            const existingUser = await prisma.user.findUnique({
+                where: {
+                    email: user.email,
+                },
+            })
+            if(!existingUser){
+                const newUser = await prisma.user.create({
+                    data: {
+                        email: user.email,
+                        user_name: user.name,
+                        image: user.image,
+                    }
+                })
+                return newUser
+            }
+
+            return true;
         },
         //Modify session object
-        // async session({ session }) {
-            
-        // },
+        async session({ session, token }:{ session: any, token: any }) {
+            const getUser = await prisma.user.findUnique({
+                where: {
+                    email: session.user.email,
+                },
+            });
+            if(!getUser){
+                throw new Error("User not found!");
+            }
+            session.user.id = getUser.id;
+            return session;
+        },
+        //redirect to home page
+        async redirect({ baseUrl }:{ baseUrl: string }) {
+            return baseUrl;
+        },
     },
    
     secret: process.env.NEXTAUTH_SECRET,

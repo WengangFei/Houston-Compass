@@ -1,3 +1,5 @@
+'use client';
+
 import Image from 'next/image'
 import React from 'react'
 import LoginAgent from './LoginAgent'
@@ -6,6 +8,7 @@ import clsx from "clsx";
 
 import { Noto_Sans_JP } from "next/font/google";
 import MobilBred from './MobilBred';
+import { useSession } from 'next-auth/react';
 
 const notoSansJP = Noto_Sans_JP({
   subsets: ["latin"],
@@ -15,8 +18,13 @@ const notoSansJP = Noto_Sans_JP({
 
 
 export default function NavBar() {
+
+  const session = useSession();
+  console.log("session=>", session);
+
+
   return (
-    <div className="bg-primary flex flex-col items-center  md:px-4 md:flex-row md:justify-between  ">
+    <div className="w-full bg-primary p-2 flex flex-col items-center  md:px-4 md:flex-row md:justify-between  ">
       {/* Left side: logo + text */}
       <MobilBred />
       <div className="flex items-center space-x-2">

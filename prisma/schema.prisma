@@ -17,9 +17,9 @@ datasource db {
 model User {
   id           String   @id @default(uuid())
   user_name    String
-  phone_number String   @unique
-  email        String   @unique
-  password     String
+  phone_number String?   @unique
+  email        String?   @unique
+  password     String?
   image        String?
   created_date DateTime @default(now())
 

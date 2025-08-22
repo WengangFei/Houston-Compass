@@ -1,7 +1,7 @@
 'use server';
 //custom login auth server function
 import { z } from "zod";
-export async function customLoginAuth(
+export async function customLoginAction(
   prev: any,
   formData: FormData
 ) {
@@ -28,7 +28,9 @@ export async function customLoginAuth(
         };
 
     }
-    const { phone, password } = parsed.data;
+
+    console.log('login data =>',parsed.data);
+    // const { phone, password } = parsed.data;
 
     return {
         success: true,
