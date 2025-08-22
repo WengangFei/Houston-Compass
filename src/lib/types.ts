@@ -7,3 +7,11 @@ export type UserSignUpForm = {
     password: string;
     passwordConfirmation?: string;
 }
+
+export type SigninUser = {
+  email?: string;
+  password?: string;
+  name: string;
+  image?: string;
+}; 
+
