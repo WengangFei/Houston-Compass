@@ -69,14 +69,17 @@ export const authOptions = {
                 },
             })
             if(!existingUser){
-                const newUser = await prisma.user.create({
+                try{
+                    const newUser = await prisma.user.create({
                     data: {
                         email: user.email,
                         user_name: user.name,
                         image: user.image,
                     }
                 })
-                return newUser
+                }catch(e){
+                    console.log(e);
+                }
             }
 
             return true;
