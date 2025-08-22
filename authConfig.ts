@@ -3,11 +3,10 @@ import Credentials from "next-auth/providers/credentials";
 import WeChat from "@auth/core/providers/wechat";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcrypt";
-import { redirect } from "next/dist/server/api-utils";
-import { SigninUser } from "@/lib/types";
+import NextAuth, { NextAuthConfig } from "next-auth"
 
 
-export const authOptions = {
+export const authOptions: NextAuthConfig = {
   providers: [
     Credentials({
       //custom sign in page logic
@@ -64,10 +63,10 @@ export const authOptions = {
   ],
   callbacks: {
     //Invoked when a user logs in
-    async signIn({ user }: { user: SigninUser }) {
+    async signIn({ user }) {
       const existingUser = await prisma.user.findUnique({
         where: {
-          email: user.email,
+          email: user.email!,
         },
       });
       if (!existingUser) {
@@ -75,7 +74,7 @@ export const authOptions = {
           const newUser = await prisma.user.create({
             data: {
               email: user.email,
-              user_name: user.name,
+              user_name: user.name!,
               image: user.image,
             },
           });
