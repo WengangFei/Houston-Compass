@@ -3,7 +3,10 @@ import Credentials from "next-auth/providers/credentials";
 import WeChat from "@auth/core/providers/wechat";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcrypt";
-import NextAuth, { NextAuthConfig } from "next-auth"
+import { NextAuthConfig } from "next-auth";
+import { sendEmail } from "@/lib/nodemailer";
+
+
 
 
 export const authOptions: NextAuthConfig = {
@@ -19,7 +22,7 @@ export const authOptions: NextAuthConfig = {
         //after sign in, check if the user exists in the database
         const user = await prisma.user.findUnique({
           where: {
-            phone_number: credentials?.phone as string,
+            phone: credentials?.phone as string,
           },
         });
         //   console.log("credentials=>", user);
@@ -38,7 +41,7 @@ export const authOptions: NextAuthConfig = {
           name: user.user_name,
           email: user.email,
           image: user.image,
-          phone_number: user.phone_number,
+          phone_number: user.phone,
         };
       },
     }),
@@ -64,6 +67,7 @@ export const authOptions: NextAuthConfig = {
   callbacks: {
     //Invoked when a user logs in
     async signIn({ user }) {
+      //check if the user exists in the database
       const existingUser = await prisma.user.findUnique({
         where: {
           email: user.email!,
@@ -78,6 +82,9 @@ export const authOptions: NextAuthConfig = {
               image: user.image,
             },
           });
+          if(newUser){
+            sendEmail(user.email!);
+          }
         } catch (e) {
           console.log(e);
         }
@@ -95,6 +102,7 @@ export const authOptions: NextAuthConfig = {
         throw new Error("User not found!");
       }
       session.user.id = getUser.id;
+      session.user.token = token;
       return session;
     },
     //redirect to home page

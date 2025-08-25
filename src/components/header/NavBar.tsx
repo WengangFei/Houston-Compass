@@ -19,12 +19,9 @@ const notoSansJP = Noto_Sans_JP({
 
 export default function NavBar() {
 
-  const session = useSession();
-  console.log("session=>", session);
-
 
   return (
-    <div className="w-full bg-primary p-2 flex flex-col items-center  md:px-4 md:flex-row md:justify-between  ">
+    <div className="w-full bg-gray-100 p-2 flex flex-col items-center  md:px-4 md:flex-row md:justify-between  ">
       {/* Left side: logo + text */}
       <MobilBred />
       <div className="flex items-center space-x-2">

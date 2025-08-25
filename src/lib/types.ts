@@ -8,10 +8,5 @@ export type UserSignUpForm = {
     passwordConfirmation?: string;
 }
 
-export type SigninUser = {
-  email?: string;
-  password?: string;
-  name: string;
-  image?: string;
-}; 
+
 
